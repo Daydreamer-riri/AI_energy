@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">AI energy</string>
+    <string name="profile">profile</string>
+    <string name="friends_list">friends</string>
+    <string name="home">家居</string>
+    <string name="event">事件</string>
+    <string name="mine">我的</string>
+</resources>
