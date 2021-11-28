@@ -10,7 +10,9 @@ import androidx.compose.runtime.Composable
 
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.Interaction
@@ -84,14 +86,17 @@ fun RowScope.MyNavigationBarItem(
                 enabled = enabled,
                 role = Role.Tab,
                 interactionSource = interactionSource,
-                indication = rememberRipple(bounded = false),
+                indication = rememberRipple(bounded = false, color = MaterialTheme.colorScheme.primary),
             )
             .weight(1f),
         contentAlignment = Alignment.Center
     ) {
         val animationProgress: Float by animateFloatAsState(
             targetValue = if (selected) 1f else 0f,
-            animationSpec = tween(ItemAnimationDurationMillis)
+            animationSpec = spring(
+                dampingRatio = 2f,
+                stiffness = Spring.StiffnessMedium
+            )
         )
 
         val indicator = @Composable {
