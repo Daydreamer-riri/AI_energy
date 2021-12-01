@@ -2,41 +2,23 @@ package com.example.aienergy.ui.components
 
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-
-//@Composable
-//fun MyNavigationBar(
-//
-//){}
-
-
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.Stable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.layout.Layout
@@ -50,6 +32,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlin.math.roundToInt
 
+//----------------------------------------------------
+// 重新封装NavigationBarItem实现自定义效果
+//----------------------------------------------------
 
 @Composable
 fun RowScope.MyNavigationBarItem(
@@ -61,7 +46,7 @@ fun RowScope.MyNavigationBarItem(
     label: @Composable (() -> Unit)? = null,
     alwaysShowLabel: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    colors: androidx.compose.material3.NavigationBarItemColors = NavigationBarItemDefaults.colors()
+    colors: NavigationBarItemColors = NavigationBarItemDefaults.colors()
 ) {
     val styledIcon = @Composable {
         val iconColor by colors.iconColor(selected = selected)
@@ -86,7 +71,10 @@ fun RowScope.MyNavigationBarItem(
                 enabled = enabled,
                 role = Role.Tab,
                 interactionSource = interactionSource,
-                indication = rememberRipple(bounded = false, color = MaterialTheme.colorScheme.primary),
+                indication = rememberRipple(
+                    bounded = false,
+                    color = MaterialTheme.colorScheme.primary
+                ),
             )
             .weight(1f),
         contentAlignment = Alignment.Center
@@ -101,7 +89,8 @@ fun RowScope.MyNavigationBarItem(
 
         val indicator = @Composable {
             Box(
-                Modifier.layoutId(IndicatorLayoutIdTag)
+                Modifier
+                    .layoutId(IndicatorLayoutIdTag)
                     .background(
                         color = colors.indicatorColor.copy(alpha = animationProgress),
                         shape = IndicatorShape
@@ -117,31 +106,6 @@ fun RowScope.MyNavigationBarItem(
             animationProgress = animationProgress
         )
     }
-}
-
-
-/** Represents the colors of the various elements of a navigation item. */
-@Stable
-interface NavigationBarItemColors {
-    /**
-     * Represents the icon color for this item, depending on whether it is [selected].
-     *
-     * @param selected whether the item is selected
-     */
-    @Composable
-    fun iconColor(selected: Boolean): State<Color>
-
-    /**
-     * Represents the text color for this item, depending on whether it is [selected].
-     *
-     * @param selected whether the item is selected
-     */
-    @Composable
-    fun textColor(selected: Boolean): State<Color>
-
-    /** Represents the color of the indicator used for selected items. */
-    val indicatorColor: Color
-        @Composable get
 }
 
 
@@ -174,7 +138,8 @@ private fun NavigationBarItemBaselineLayout(
 
         if (label != null) {
             Box(
-                Modifier.layoutId(LabelLayoutIdTag)
+                Modifier
+                    .layoutId(LabelLayoutIdTag)
                     .alpha(if (alwaysShowLabel) 1f else animationProgress)
                     .padding(horizontal = NavigationBarItemHorizontalPadding)
             ) { label() }
@@ -328,7 +293,7 @@ private const val IconLayoutIdTag: String = "icon"
 
 private const val LabelLayoutIdTag: String = "label"
 
-private const val ItemAnimationDurationMillis: Int = 100
+//private const val ItemAnimationDurationMillis: Int = 100
 
 private val NavigationBarItemHorizontalPadding: Dp = 4.dp
 

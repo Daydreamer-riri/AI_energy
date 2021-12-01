@@ -8,6 +8,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.House
+import androidx.compose.material.icons.outlined.House
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -16,6 +18,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.AlignmentLine
@@ -33,6 +36,12 @@ import com.example.aienergy.ui.theme.AIEnergyTheme
 import com.google.accompanist.insets.statusBarsPadding
 import kotlin.math.max
 import kotlin.math.roundToInt
+
+
+//----------------------------------------------------
+// SmallTopBar（适配沉浸状态栏）
+//----------------------------------------------------
+
 
 @Composable
 fun AIeSmallTopBar(
@@ -62,6 +71,12 @@ fun AIeSmallTopBar(
         )
     }
 }
+
+
+//----------------------------------------------------
+// LargeTopBar（适配沉浸状态栏）
+//----------------------------------------------------
+
 
 @Composable
 fun AIeLargeTopBar(
@@ -102,7 +117,84 @@ fun AIeLargeTopBar(
 
 
 //----------------------------------------------------
-// main展示顶栏
+// main用户信息展示顶栏
+//----------------------------------------------------
+
+@Composable
+fun AccountDisplay(
+    accountNumber: Number? = null,
+    balance: BigDecimal? = null,
+    days: Number? = null,
+    backgroundColor: Color,
+) {
+    val ripple = rememberRipple()
+    Row(
+        modifier = Modifier
+            .height(156.dp)
+            .fillMaxWidth()
+            .background(backgroundColor)
+            .padding(start = 16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    imageVector = Icons.Outlined.House,
+                    contentDescription = null
+                )
+                Surface(
+                    onClick = { /*TODO*/ },
+                    color = MaterialTheme.colorScheme.secondaryContainer,
+                    indication = ripple,
+                    shape = RoundedCornerShape(50),
+                    tonalElevation = 5.dp
+
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .padding(horizontal = 12.dp, vertical = 4.dp),
+                        text = "${accountNumber ?: "添加户号"}",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+            }
+            Column(
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+                modifier = Modifier.padding(start = 32.dp)
+            ) {
+                Text(text = "余额（元）：", style = MaterialTheme.typography.titleMedium)
+                Text(
+                    text = if (balance == null)
+                        "**.**"
+                    else
+                        DecimalFormat("#,##0.00").format(balance),
+                    style = MaterialTheme.typography.titleLarge
+                )
+                Text(
+                    text = "预计可用${days ?: "*"}天",
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
+
+        }
+        Column(
+            modifier = Modifier.fillMaxHeight(),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.Start
+        ) {
+            MainPagePic(contentDescription = null, modifier = Modifier.scale(0.8f))
+
+        }
+    }
+}
+
+
+//----------------------------------------------------
+// main展示顶栏(由于无法嵌套滚动已弃用)
 //----------------------------------------------------
 @Composable
 fun AccountDisplayTopBar(
@@ -114,47 +206,67 @@ fun AccountDisplayTopBar(
     val ripple = rememberRipple()
     AIeLargeTopBar(
         title = {
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        imageVector = Icons.Filled.Home,
-                        contentDescription = null
-                    )
-                    Surface(
-                        onClick = { /*TODO*/ },
-                        color = MaterialTheme.colorScheme.secondary,
-                        indication = ripple,
-                        shape = RoundedCornerShape(50)
-
+            Row(
+                modifier = Modifier
+                    .height(156.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
+                        Icon(
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            imageVector = Icons.Filled.Home,
+                            contentDescription = null
+                        )
+                        Surface(
+                            onClick = { /*TODO*/ },
+                            color = MaterialTheme.colorScheme.secondaryContainer,
+                            indication = ripple,
+                            shape = RoundedCornerShape(50),
+                            tonalElevation = 5.dp
+
+                        ) {
+                            Text(
+                                modifier = Modifier
+                                    .padding(horizontal = 12.dp, vertical = 4.dp),
+                                text = "${accountNumber ?: "添加户号"}",
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
+                    }
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                        modifier = Modifier.padding(start = 32.dp)
+                    ) {
+                        Text(text = "余额（元）：", style = MaterialTheme.typography.titleMedium)
                         Text(
-                            modifier = Modifier
-                                .padding(horizontal = 12.dp, vertical = 4.dp),
-                            text = "${accountNumber ?: "添加户号"}",
+                            text = if (balance == null)
+                                "**.**"
+                            else
+                                DecimalFormat("#,##0.00").format(balance),
+                            style = MaterialTheme.typography.titleLarge
+                        )
+                        Text(
+                            text = "预计可用${days ?: "*"}天",
                             style = MaterialTheme.typography.titleMedium
                         )
                     }
+
                 }
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                    modifier = Modifier.padding(start = 32.dp)
+                    modifier = Modifier.fillMaxHeight(),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.Start
                 ) {
-                    Text(text = "余额（元）：", style = MaterialTheme.typography.titleMedium)
-                    Text(
-                        text = if (balance == null)
-                            "**.**"
-                        else
-                            DecimalFormat("#,##0.00").format(balance),
-                        style = MaterialTheme.typography.titleLarge
-                    )
-                    Text(text = "预计可用${days ?: "*"}天", style = MaterialTheme.typography.titleMedium)
-                }
+                    MainPagePic(contentDescription = null, modifier = Modifier.scale(0.8f))
 
+                }
             }
+
         },
         navigationIcon = {
 //            IconButton(onClick = { /* doSomething() */ }) {
@@ -192,7 +304,7 @@ fun AccountDisplayTopBar(
 fun LargeTopBarPreview() {
     AIEnergyTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
-            AccountDisplayTopBar()
+//            AccountDisplay(,)
         }
 
     }
@@ -433,8 +545,8 @@ private fun TopAppBarLayout(
                     Arrangement.End ->
                         constraints.maxWidth - titlePlaceable.width - actionIconsPlaceable.width
                     // Arrangement.Start.
-                    // An TopAppBarTitleInset will make sure the title is offset in case the
-                    // navigation icon is missing.
+                    //  TopAppBarTitleInset 确保标题的偏移
+                    // 以免导航图标消失.
                     else -> max(TopAppBarTitleInset.roundToPx(), navigationIconPlaceable.width)
                 },
                 y = when (titleVerticalArrangement) {
@@ -466,8 +578,6 @@ private val MediumTitleBottomPadding = 24.dp
 private val LargeTitleBottomPadding = 28.dp
 private val TopAppBarHorizontalPadding = 4.dp
 
-// A title inset when the App-Bar is a Medium or Large one. Also used to size a spacer when the
-// navigation icon is missing.
 private val TopAppBarTitleInset = 16.dp - TopAppBarHorizontalPadding
 
 private const val TopAppBarAnimationDurationMillis = 500

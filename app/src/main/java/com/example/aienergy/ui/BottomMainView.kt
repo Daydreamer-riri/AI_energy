@@ -1,5 +1,6 @@
 package com.example.aienergy.ui
 
+import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -56,54 +57,55 @@ fun BottomMainView(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     Surface(modifier = modifier) {
         Scaffold(
+            //底栏
             bottomBar = {
                 Column() {
-//                    CompositionLocalProvider(
-//                        LocalRippleTheme provides ClearRippleTheme
-//                    ) {
-                        NavigationBar {
-                            val navBackStackEntry by navController.currentBackStackEntryAsState()
-                            val currentDestination = navBackStackEntry?.destination
+                    NavigationBar {
 
-                            bottomNavScreen.forEachIndexed { index, screen ->
-                                val selected =
-                                    currentDestination?.hierarchy?.any { it.route == screen.route } == true
-                                //导航栏项
-                                MyNavigationBarItem(
-                                    icon = {
-                                        Icon(
+                        val navBackStackEntry by navController.currentBackStackEntryAsState()
+                        val currentDestination = navBackStackEntry?.destination
 
-                                            imageVector = if (selected) {
-                                                selectedIcons[index]
-                                            } else {
-                                                unselectedIcons[index]
-                                            },
-                                            contentDescription = screen.resourceId.toString()
-                                        )
-                                    },
-                                    label = {
-                                        Text(
-                                            stringResource(screen.resourceId),
-                                            style = MaterialTheme.typography.titleMedium
-                                        )
-                                    },
-                                    selected = selected,
-                                    onClick = {
-                                        navController.navigate(screen.route) {
-                                            // Pop up to the start destination of the graph to
-                                            // avoid building up a large stack of destinations
-                                            // on the back stack as users select items
-                                            popUpTo(navController.graph.findStartDestination().id) {
-                                                saveState = true
-                                            }
-                                            // Avoid multiple copies of the same destination when
-                                            // reselecting the same item
-                                            launchSingleTop = true
-                                            // Restore state when reselecting a previously selected item
-                                            restoreState = true
+                        bottomNavScreen.forEachIndexed { index, screen ->
+                            val selected =
+                                currentDestination?.hierarchy?.any { it.route == screen.route } == true
+                            //导航栏项
+                            MyNavigationBarItem(
+                                icon = {
+                                    Icon(
+                                        imageVector = if (selected) {
+                                            selectedIcons[index]
+                                        } else {
+                                            unselectedIcons[index]
+                                        },
+                                        contentDescription = screen.resourceId.toString()
+                                    )
+                                },
+
+                                label = {
+                                    Text(
+                                        stringResource(screen.resourceId),
+                                        style = MaterialTheme.typography.titleMedium
+                                    )
+                                },
+
+                                selected = selected,
+
+                                onClick = {
+                                    navController.navigate(screen.route) {
+                                        // Pop up to the start destination of the graph to
+                                        // avoid building up a large stack of destinations
+                                        // on the back stack as users select items
+                                        popUpTo(navController.graph.findStartDestination().id) {
+                                            saveState = true
                                         }
-                                    },
-                                )
+                                        // Avoid multiple copies of the same destination when
+                                        // reselecting the same item
+                                        launchSingleTop = true
+                                        // Restore state when reselecting a previously selected item
+                                        restoreState = true
+                                    }
+                                },
+                            )
 //                            }
                         }
                     }

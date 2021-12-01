@@ -1,4 +1,4 @@
-package com.example.aienergy.classes
+package com.example.aienergy.data
 
 import android.icu.math.BigDecimal
 
